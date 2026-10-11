@@ -14,6 +14,7 @@ export function CycleView() {
   const notes = computePatterns(d).filter((p) => p.kind === 'cycle' || p.id === 'acne_any_cd_window' || p.id === 'acne_any_cycles');
   const [editing, setEditing] = useState<Cycle | null>(null);
   const [newStart, setNewStart] = useState('');
+  const [newEnd, setNewEnd] = useState('');
 
   return (
     <>
@@ -24,11 +25,10 @@ export function CycleView() {
       {pred && <Card><span className="sub">Estimated next period start:</span> <b>{fmtShort(pred.date)}</b> <span className="sub">(mean of {plural(pred.n, 'recorded cycle')}: {pred.avg_len} d, range {pred.min_len}–{pred.max_len})</span></Card>}
 
       <Card>
-        <h3>Add a past period start</h3>
-        <div className="row">
-          <input type="date" max={today} value={newStart} onChange={(e) => setNewStart(e.target.value)} />
-          <button className="btn primary" disabled={!newStart} onClick={() => { addCycle(newStart); setNewStart(''); }}>Add</button>
-        </div>
+        <h3>Add a past period</h3>
+        <Field label="Started"><input type="date" max={today} value={newStart} onChange={(e) => setNewStart(e.target.value)} /></Field>
+        <Field label="Ended (optional)"><input type="date" max={today} min={newStart || undefined} value={newEnd} onChange={(e) => setNewEnd(e.target.value)} /></Field>
+        <button className="btn primary block" disabled={!newStart || (!!newEnd && newEnd < newStart)} onClick={() => { addCycle(newStart, newEnd || undefined); setNewStart(''); setNewEnd(''); }}>Add period</button>
       </Card>
 
       {sums.length === 0 && <Card><span className="sub">No periods recorded yet. Use “Period started” in the Log tab, or add a date above.</span></Card>}

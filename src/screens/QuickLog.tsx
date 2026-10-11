@@ -47,9 +47,14 @@ export function QuickLog({ date: dateParam }: { date?: string }) {
         <button className="btn sm" onClick={() => go(`log/${addDays(date, -1)}`)} aria-label="Previous day">‹</button>
         <div style={{ textAlign: 'center' }}>
           <h1 style={{ fontSize: 22 }}>{date === todayISO() ? 'Today' : fmtLong(date)}</h1>
-          <div className="sub">{date === todayISO() ? fmtLong(date) : ''}{cd !== null && ` · CD ${cd}`}</div>
+          <div className="sub">{date === todayISO() ? fmtLong(date) : ''}{cd !== null && ` · CD ${cd}`}{!log && date !== todayISO() && ' · not logged yet'}</div>
         </div>
         <button className="btn sm" disabled={date >= todayISO()} onClick={() => go(`log/${addDays(date, 1)}`)} aria-label="Next day">›</button>
+      </div>
+
+      <div className="row" style={{ marginTop: 10 }}>
+        <label className="sub" htmlFor="jump">Log a different day:</label>
+        <input id="jump" type="date" max={todayISO()} value={date} onChange={(e) => e.target.value && go(`log/${e.target.value}`)} />
       </div>
 
       <h2>Cycle</h2>

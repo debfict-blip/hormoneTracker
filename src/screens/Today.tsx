@@ -1,7 +1,7 @@
 import { cycleDayFor, predictNext } from '../cycle';
 import { toggleUsage, updateLog, useStore } from '../store';
 import { Card, Chip, go } from '../ui';
-import { fmtLong, fmtShort, plural, todayISO } from '../util';
+import { addDays, fmtShort, fmtLong, plural, todayISO } from '../util';
 import { DayCard } from './DayCard';
 
 export function Today() {
@@ -37,6 +37,15 @@ export function Today() {
       </Card>
 
       <button className="cta" onClick={() => go('log')}>＋ Log today{log ? ' (edit)' : ''}</button>
+
+      <h2>Catch up on past days</h2>
+      <div className="chips">
+        {Array.from({ length: 7 }, (_, i) => addDays(today, -(i + 1))).map((day) => {
+          const done = d.logs.some((l) => l.date === day);
+          return <Chip key={day} small on={done} onClick={() => go(`log/${day}`)}>{done ? '✓ ' : ''}{fmtShort(day)}</Chip>;
+        })}
+      </div>
+      <div className="sub" style={{ marginTop: 6 }}>Tap a day to add or edit symptoms, period dates and skincare. Older days: use the date picker on the Log tab.</div>
 
       <h2>Quick symptoms</h2>
       <div className="chips">
